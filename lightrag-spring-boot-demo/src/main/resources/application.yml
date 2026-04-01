@@ -1,0 +1,47 @@
+lightrag:
+  chat:
+    base-url: ${LIGHTRAG_CHAT_BASE_URL:http://localhost:11434/v1/}
+    model: ${LIGHTRAG_CHAT_MODEL:qwen2.5:7b}
+    api-key: ${LIGHTRAG_CHAT_API_KEY:dummy}
+    timeout: ${LIGHTRAG_CHAT_TIMEOUT:PT30S}
+  embedding:
+    base-url: ${LIGHTRAG_EMBEDDING_BASE_URL:http://localhost:11434/v1/}
+    model: ${LIGHTRAG_EMBEDDING_MODEL:nomic-embed-text}
+    api-key: ${LIGHTRAG_EMBEDDING_API_KEY:dummy}
+    timeout: ${LIGHTRAG_EMBEDDING_TIMEOUT:PT30S}
+  indexing:
+    chunking:
+      window-size: ${LIGHTRAG_INDEXING_CHUNK_WINDOW_SIZE:${LIGHTRAG_INDEXING_CHUNKING_WINDOW_SIZE:1000}}
+      overlap: ${LIGHTRAG_INDEXING_CHUNK_OVERLAP:${LIGHTRAG_INDEXING_CHUNKING_OVERLAP:100}}
+    ingest:
+      preset: ${LIGHTRAG_INDEXING_INGEST_PRESET:GENERAL}
+    embedding-batch-size: ${LIGHTRAG_INDEXING_EMBEDDING_BATCH_SIZE:0}
+    max-parallel-insert: ${LIGHTRAG_INDEXING_MAX_PARALLEL_INSERT:1}
+    entity-extract-max-gleaning: ${LIGHTRAG_INDEXING_ENTITY_EXTRACT_MAX_GLEANING:1}
+    max-extract-input-tokens: ${LIGHTRAG_INDEXING_MAX_EXTRACT_INPUT_TOKENS:20480}
+    language: ${LIGHTRAG_INDEXING_LANGUAGE:English}
+    entity-types: ${LIGHTRAG_INDEXING_ENTITY_TYPES:Person,Creature,Organization,Location,Event,Concept,Method,Content,Data,Artifact,NaturalObject,Other}
+  query:
+    default-mode: ${LIGHTRAG_QUERY_DEFAULT_MODE:MIX}
+    default-top-k: ${LIGHTRAG_QUERY_DEFAULT_TOP_K:10}
+    default-chunk-top-k: ${LIGHTRAG_QUERY_DEFAULT_CHUNK_TOP_K:10}
+    default-response-type: ${LIGHTRAG_QUERY_DEFAULT_RESPONSE_TYPE:Multiple Paragraphs}
+    automatic-keyword-extraction: ${LIGHTRAG_QUERY_AUTOMATIC_KEYWORD_EXTRACTION:true}
+    rerank-candidate-multiplier: ${LIGHTRAG_QUERY_RERANK_CANDIDATE_MULTIPLIER:2}
+  demo:
+    async-ingest-enabled: ${LIGHTRAG_DEMO_ASYNC_INGEST_ENABLED:true}
+  storage:
+    type: ${LIGHTRAG_STORAGE_TYPE:in-memory}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+  health:
+    neo4j:
+      enabled: false
