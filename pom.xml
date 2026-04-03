@@ -200,6 +200,13 @@
                 <version>${commons-compress.version}</version>
             </dependency>
 
+            <!-- Commons Lang3 - required by commons-compress 1.28.0 -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.17.0</version>
+            </dependency>
+
             <!-- Milvus -->
             <dependency>
                 <groupId>io.milvus</groupId>
