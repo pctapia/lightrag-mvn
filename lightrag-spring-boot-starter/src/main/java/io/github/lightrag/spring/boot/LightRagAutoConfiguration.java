@@ -170,6 +170,20 @@ public class LightRagAutoConfiguration {
                     neo4jConfig(properties),
                     snapshotStore
                 );
+            case MYSQL_MILVUS_NEO4J -> dataSource != null
+                ? new io.github.lightrag.storage.mysql.MySqlMilvusNeo4jStorageProvider(
+                    dataSource,
+                    mySqlConfig(properties),
+                    milvusConfig(properties),
+                    neo4jConfig(properties),
+                    snapshotStore
+                )
+                : new io.github.lightrag.storage.mysql.MySqlMilvusNeo4jStorageProvider(
+                    mySqlConfig(properties),
+                    milvusConfig(properties),
+                    neo4jConfig(properties),
+                    snapshotStore
+                );
         };
     }
 
@@ -247,6 +261,36 @@ public class LightRagAutoConfiguration {
             requireValue(neo4j.getUsername(), "lightrag.storage.neo4j.username"),
             requireValue(neo4j.getPassword(), "lightrag.storage.neo4j.password"),
             requireValue(neo4j.getDatabase(), "lightrag.storage.neo4j.database")
+        );
+    }
+
+    private static io.github.lightrag.storage.mysql.MySqlStorageConfig mySqlConfig(LightRagProperties properties) {
+        var mysql = properties.getStorage().getMysql();
+        return new io.github.lightrag.storage.mysql.MySqlStorageConfig(
+            requireValue(mysql.getJdbcUrl(), "lightrag.storage.mysql.jdbc-url"),
+            requireValue(mysql.getUsername(), "lightrag.storage.mysql.username"),
+            requireValue(mysql.getPassword(), "lightrag.storage.mysql.password"),
+            requireValue(mysql.getTablePrefix(), "lightrag.storage.mysql.table-prefix")
+        );
+    }
+
+    private static io.github.lightrag.storage.milvus.MilvusVectorConfig milvusConfig(LightRagProperties properties) {
+        var milvus = properties.getStorage().getMilvus();
+        if (milvus.getVectorDimensions() == null) {
+            throw new IllegalStateException("lightrag.storage.milvus.vector-dimensions is required");
+        }
+        return new io.github.lightrag.storage.milvus.MilvusVectorConfig(
+            requireValue(milvus.getUri(), "lightrag.storage.milvus.uri"),
+            milvus.getToken(),
+            milvus.getUsername(),
+            milvus.getPassword(),
+            requireValue(milvus.getDatabase(), "lightrag.storage.milvus.database"),
+            requireValue(milvus.getCollectionPrefix(), "lightrag.storage.milvus.collection-prefix"),
+            milvus.getVectorDimensions(),
+            milvus.getAnalyzerType(),
+            milvus.getHybridRanker(),
+            milvus.getHybridRrfK(),
+            milvus.getSchemaDriftStrategy()
         );
     }
 
