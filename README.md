@@ -1,7 +1,7 @@
 # lightrag-java
 
 ![Java 17](https://img.shields.io/badge/Java-17-437291)
-![Gradle 8](https://img.shields.io/badge/Gradle-8.14.3-02303A)
+![Maven](https://img.shields.io/badge/Maven-3.9+-C71A36)
 ![Spring Boot Starter](https://img.shields.io/badge/Spring_Boot-Starter-6DB33F)
 ![RAGAS Eval](https://img.shields.io/badge/Evaluation-RAGAS-7B61FF)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.dargoner/lightrag-core)](https://search.maven.org/artifact/io.github.dargoner/lightrag-core)
@@ -11,8 +11,8 @@ Standalone Java SDK for a LightRAG-style indexing and retrieval pipeline.
 
 ## Requirements
 
-- A local JDK 17 is supported.
-- If JDK 17 is not installed, Gradle is configured to auto-provision a matching toolchain.
+- Java 17 or higher
+- Maven 3.9 or higher
 
 ## Publishing
 
@@ -163,7 +163,7 @@ All demo endpoints resolve a workspace before touching storage. By default the d
 Run the demo locally with:
 
 ```bash
-./gradlew :lightrag-spring-boot-demo:bootRun
+mvn spring-boot:run -pl lightrag-spring-boot-demo
 ```
 
 The demo's default config lives in:
@@ -1043,7 +1043,7 @@ The evaluation tasks now emit structured JSON envelopes so different runs can be
 Single-query evaluation:
 
 ```bash
-./gradlew :lightrag-core:runRagasQuery --args="\
+mvn exec:java@run-ragas-query -pl lightrag-core -Dexec.args="\
   --documents-dir /tmp/docs \
   --question 'Who works with Bob?' \
   --mode NAIVE \
@@ -1079,7 +1079,7 @@ Output shape:
 Batch evaluation:
 
 ```bash
-./gradlew :lightrag-core:runRagasBatchEval --args="\
+mvn exec:java@run-ragas-batch-eval -pl lightrag-core -Dexec.args="\
   --documents-dir /tmp/docs \
   --dataset /tmp/dataset.json \
   --mode MIX \
@@ -1092,13 +1092,13 @@ Batch evaluation:
 For a fixed local baseline, the batch CLI now defaults to the bundled sample corpus and sample dataset:
 
 ```bash
-./gradlew :lightrag-core:runRagasBatchEval --args="--run-label baseline"
+mvn exec:java@run-ragas-batch-eval -pl lightrag-core -Dexec.args="--run-label baseline"
 ```
 
 You can compare a candidate configuration by re-running the same dataset with a different label and retrieval knobs:
 
 ```bash
-./gradlew :lightrag-core:runRagasBatchEval --args="\
+mvn exec:java@run-ragas-batch-eval -pl lightrag-core -Dexec.args="\
   --run-label candidate-rerank-4 \
   --top-k 10 \
   --chunk-top-k 20 \
