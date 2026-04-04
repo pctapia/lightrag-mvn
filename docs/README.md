@@ -15,14 +15,14 @@ System design, storage options, and architectural decisions
 
 ### [`/guides`](./guides)
 How-to guides and integration tutorials
-- **[WIKI_SCRAPING_GUIDE.md](./guides/WIKI_SCRAPING_GUIDE.md)** - GitLab wiki synchronization (optimized for .md and .adoc files)
+- **[GITLAB_WIKI_SYNC_GUIDE.md](./guides/GITLAB_WIKI_SYNC_GUIDE.md)** - GitLab wiki synchronization using JGit (.md and .adoc files)
 
 ## 🚀 Quick Start
 
 1. **Running the demo**: See main [README.md](../README.md)
 2. **Using the API**: See [API_REFERENCE.md](./api/API_REFERENCE.md)
 3. **Choosing a database**: See [DB_OPTION_EVALUATION.md](./architecture/DB_OPTION_EVALUATION.md)
-4. **Syncing your wiki**: See [WIKI_SCRAPING_GUIDE.md](./guides/WIKI_SCRAPING_GUIDE.md)
+4. **Syncing your wiki**: See [GITLAB_WIKI_SYNC_GUIDE.md](./guides/GITLAB_WIKI_SYNC_GUIDE.md)
 
 ## 📝 Contributing Documentation
 
