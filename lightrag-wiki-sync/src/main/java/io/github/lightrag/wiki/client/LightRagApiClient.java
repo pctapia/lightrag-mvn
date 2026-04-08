@@ -44,14 +44,17 @@ public class LightRagApiClient {
      * @return raw JSON response body from LightRAG (contains job ID and document IDs)
      * @throws IOException if the HTTP call fails or the server returns a non-2xx status
      */
-    public String uploadFile(String fileName, byte[] content) throws IOException {
+    public String uploadFile(String fileName, byte[] content, String gitFilePath) throws IOException {
         MediaType mediaType = resolveMediaType(fileName);
 
         RequestBody fileBody = RequestBody.create(content, mediaType);
-        RequestBody multipart = new MultipartBody.Builder()
+        var multipartBuilder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("files", fileName, fileBody)
-                .build();
+                .addFormDataPart("files", fileName, fileBody);
+        if (gitFilePath != null && !gitFilePath.isBlank()) {
+            multipartBuilder.addFormDataPart("file_path", gitFilePath);
+        }
+        RequestBody multipart = multipartBuilder.build();
 
         Request request = new Request.Builder()
                 .url(properties.getLightragApiUrl() + "/documents/upload")

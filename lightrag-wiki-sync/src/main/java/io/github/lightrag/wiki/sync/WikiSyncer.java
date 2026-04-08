@@ -150,21 +150,26 @@ public class WikiSyncer {
         if (Files.exists(clonePath.resolve(".git"))) {
             return;
         }
-        log.info("Cloning wiki repo {} → {}", properties.wikiGitUrl(), clonePath);
+        log.info("Cloning wiki repo {} → {}", properties.resolveGitUrl(), clonePath);
         Files.createDirectories(clonePath);
-        Git.cloneRepository()
-                .setURI(properties.wikiGitUrl())
-                .setDirectory(clonePath.toFile())
-                .setCredentialsProvider(gitLabCredentials())
-                .call()
-                .close();
+        var clone = Git.cloneRepository()
+                .setURI(properties.resolveGitUrl())
+                .setDirectory(clonePath.toFile());
+        var creds = credentials();
+        if (creds != null) {
+            clone.setCredentialsProvider(creds);
+        }
+        clone.call().close();
         log.info("Clone complete");
     }
 
     private void pullLatest(Git git) throws GitAPIException {
-        git.pull()
-                .setCredentialsProvider(gitLabCredentials())
-                .call();
+        var pull = git.pull();
+        var creds = credentials();
+        if (creds != null) {
+            pull.setCredentialsProvider(creds);
+        }
+        pull.call();
     }
 
     // -------------------------------------------------------------------------
@@ -325,7 +330,7 @@ public class WikiSyncer {
         String docId = DocumentIdComputer.compute(fileName, content);
 
         log.debug("Uploading {} → docId={}", gitFilePath, docId);
-        apiClient.uploadFile(fileName, content);
+        apiClient.uploadFile(fileName, content, gitFilePath);
         registry.put(gitFilePath, docId);
         log.info("Uploaded: {} (docId={})", gitFilePath, abbrev(docId));
         return docId;
@@ -404,13 +409,18 @@ public class WikiSyncer {
     }
 
     /**
-     * Returns credentials using the GitLab OAuth2 / personal-access-token convention.
-     * GitLab expects the username {@code "oauth2"} when a PAT or OAuth token is used as
-     * the password. GitHub uses {@code "x-access-token"} instead — override this method
-     * if you need to support a different git host.
+     * Returns a {@link UsernamePasswordCredentialsProvider} for the configured access token,
+     * or {@code null} when no token is set (public repositories do not require authentication).
+     *
+     * <p>The username {@code "x-access-token"} is accepted by both GitHub and GitLab when
+     * a personal access token is supplied as the password.
      */
-    private UsernamePasswordCredentialsProvider gitLabCredentials() {
-        return new UsernamePasswordCredentialsProvider("oauth2", properties.getAccessToken());
+    private UsernamePasswordCredentialsProvider credentials() {
+        String token = properties.getAccessToken();
+        if (token == null || token.isBlank()) {
+            return null;
+        }
+        return new UsernamePasswordCredentialsProvider("x-access-token", token);
     }
 
     // -------------------------------------------------------------------------

@@ -73,6 +73,18 @@ public class WikiSyncProperties {
     private boolean syncOnStartup = false;
 
     /**
+     * Full Git remote URL to clone, used as-is.
+     * When set, {@code remoteUrl} and {@code projectPath} are ignored and the
+     * {@code .wiki.git} suffix is NOT appended automatically.
+     *
+     * <p>Use this when pointing at a regular repository rather than a platform
+     * wiki repository, or when the URL does not follow the standard wiki convention.
+     *
+     * <p>Example: https://github.com/my-org/my-repo.git
+     */
+    private String gitUrl;
+
+    /**
      * File extensions (including the leading dot) to consider as wiki pages.
      * Files with other extensions found in the repository are ignored.
      */
@@ -154,6 +166,14 @@ public class WikiSyncProperties {
         this.syncOnStartup = syncOnStartup;
     }
 
+    public String getGitUrl() {
+        return gitUrl;
+    }
+
+    public void setGitUrl(String gitUrl) {
+        this.gitUrl = gitUrl;
+    }
+
     public List<String> getFileExtensions() {
         return fileExtensions;
     }
@@ -163,10 +183,19 @@ public class WikiSyncProperties {
     }
 
     /**
-     * Constructs the Git remote URL for the wiki repository.
-     * Both GitLab and GitHub append ".wiki.git" to the project URL.
+     * Returns the Git remote URL to clone.
+     *
+     * <p>If {@code git-url} is set explicitly it is returned as-is — no suffix
+     * is appended and {@code remote-url} / {@code project-path} are ignored.
+     *
+     * <p>Otherwise the URL is constructed from {@code remote-url} and
+     * {@code project-path} using the GitHub / GitLab wiki convention:
+     * {@code <remote-url>/<project-path>.wiki.git}
      */
-    public String wikiGitUrl() {
+    public String resolveGitUrl() {
+        if (gitUrl != null && !gitUrl.isBlank()) {
+            return gitUrl;
+        }
         return remoteUrl + "/" + projectPath + ".wiki.git";
     }
 }

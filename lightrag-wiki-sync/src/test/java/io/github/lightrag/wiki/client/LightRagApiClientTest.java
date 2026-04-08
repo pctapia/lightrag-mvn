@@ -57,7 +57,7 @@ class LightRagApiClientTest {
                 .setBody("{\"jobId\":\"job-1\",\"documentIds\":[\"home-abc123def456\"]}"));
 
         String response = client.uploadFile("Home.md",
-                "# Home\nContent".getBytes(StandardCharsets.UTF_8));
+                "# Home\nContent".getBytes(StandardCharsets.UTF_8), null);
 
         assertThat(response).contains("job-1").contains("home-abc123def456");
     }
@@ -66,7 +66,7 @@ class LightRagApiClientTest {
     void uploadFileSendsPostToCorrectEndpoint() throws Exception {
         server.enqueue(new MockResponse().setResponseCode(202).setBody("{}"));
 
-        client.uploadFile("Home.md", "content".getBytes(StandardCharsets.UTF_8));
+        client.uploadFile("Home.md", "content".getBytes(StandardCharsets.UTF_8), null);
 
         RecordedRequest request = server.takeRequest();
         assertThat(request.getMethod()).isEqualTo("POST");
@@ -77,7 +77,7 @@ class LightRagApiClientTest {
     void uploadFileSendsWorkspaceIdHeader() throws Exception {
         server.enqueue(new MockResponse().setResponseCode(202).setBody("{}"));
 
-        client.uploadFile("Home.md", "content".getBytes(StandardCharsets.UTF_8));
+        client.uploadFile("Home.md", "content".getBytes(StandardCharsets.UTF_8), null);
 
         RecordedRequest request = server.takeRequest();
         assertThat(request.getHeader("X-Workspace-Id")).isEqualTo("test-workspace");
@@ -87,7 +87,7 @@ class LightRagApiClientTest {
     void uploadFileSendsFileNameInMultipartBody() throws Exception {
         server.enqueue(new MockResponse().setResponseCode(202).setBody("{}"));
 
-        client.uploadFile("Home.md", "# Home".getBytes(StandardCharsets.UTF_8));
+        client.uploadFile("Home.md", "# Home".getBytes(StandardCharsets.UTF_8), null);
 
         String body = server.takeRequest().getBody().readUtf8();
         assertThat(body).contains("Home.md");
@@ -97,7 +97,7 @@ class LightRagApiClientTest {
     void uploadFileSetsMarkdownMediaTypeForMdExtension() throws Exception {
         server.enqueue(new MockResponse().setResponseCode(202).setBody("{}"));
 
-        client.uploadFile("notes.md", "content".getBytes(StandardCharsets.UTF_8));
+        client.uploadFile("notes.md", "content".getBytes(StandardCharsets.UTF_8), null);
 
         String body = server.takeRequest().getBody().readUtf8();
         assertThat(body).contains("text/markdown");
@@ -107,7 +107,7 @@ class LightRagApiClientTest {
     void uploadFileSetsAsciidocMediaTypeForAdocExtension() throws Exception {
         server.enqueue(new MockResponse().setResponseCode(202).setBody("{}"));
 
-        client.uploadFile("guide.adoc", "= Title".getBytes(StandardCharsets.UTF_8));
+        client.uploadFile("guide.adoc", "= Title".getBytes(StandardCharsets.UTF_8), null);
 
         String body = server.takeRequest().getBody().readUtf8();
         assertThat(body).contains("text/asciidoc");
@@ -117,7 +117,7 @@ class LightRagApiClientTest {
     void uploadFileSetsPlainTextMediaTypeForUnknownExtension() throws Exception {
         server.enqueue(new MockResponse().setResponseCode(202).setBody("{}"));
 
-        client.uploadFile("notes.txt", "content".getBytes(StandardCharsets.UTF_8));
+        client.uploadFile("notes.txt", "content".getBytes(StandardCharsets.UTF_8), null);
 
         String body = server.takeRequest().getBody().readUtf8();
         assertThat(body).contains("text/plain");
@@ -130,7 +130,7 @@ class LightRagApiClientTest {
                 .setBody("{\"error\":\"internal server error\"}"));
 
         assertThatThrownBy(() ->
-                client.uploadFile("Home.md", "content".getBytes(StandardCharsets.UTF_8)))
+                client.uploadFile("Home.md", "content".getBytes(StandardCharsets.UTF_8), null))
                 .isInstanceOf(IOException.class)
                 .hasMessageContaining("500")
                 .hasMessageContaining("Home.md");
@@ -143,7 +143,7 @@ class LightRagApiClientTest {
                 .setBody("{\"message\":\"file too large\"}"));
 
         assertThatThrownBy(() ->
-                client.uploadFile("large.md", "x".repeat(100).getBytes(StandardCharsets.UTF_8)))
+                client.uploadFile("large.md", "x".repeat(100).getBytes(StandardCharsets.UTF_8), null))
                 .isInstanceOf(IOException.class)
                 .hasMessageContaining("400");
     }

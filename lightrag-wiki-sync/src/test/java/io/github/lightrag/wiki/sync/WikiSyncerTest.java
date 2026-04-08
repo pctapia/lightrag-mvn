@@ -104,7 +104,7 @@ class WikiSyncerTest {
         assertThat(result.toCommit()).isNotNull();
         assertThat(clonePath.resolve(".git")).exists();
 
-        verify(mockApiClient).uploadFile(eq("Home.md"), any());
+        verify(mockApiClient).uploadFile(eq("Home.md"), any(), any());
     }
 
     @Test
@@ -143,8 +143,8 @@ class WikiSyncerTest {
         syncer.sync();
 
         // Only Home.md is a wiki file
-        verify(mockApiClient, times(1)).uploadFile(any(), any());
-        verify(mockApiClient).uploadFile(eq("Home.md"), any());
+        verify(mockApiClient, times(1)).uploadFile(any(), any(), any());
+        verify(mockApiClient).uploadFile(eq("Home.md"), any(), any());
     }
 
     @Test
@@ -159,7 +159,7 @@ class WikiSyncerTest {
         syncer.sync();
 
         // .gitignore must not be uploaded
-        verify(mockApiClient, never()).uploadFile(eq(".gitignore"), any());
+        verify(mockApiClient, never()).uploadFile(eq(".gitignore"), any(), any());
     }
 
     // -------------------------------------------------------------------------
@@ -197,8 +197,8 @@ class WikiSyncerTest {
         assertThat(result.filesUploaded()).isEqualTo(1);
         assertThat(result.filesFailed()).isEqualTo(0);
 
-        verify(mockApiClient).uploadFile(eq("About.md"), any());
-        verify(mockApiClient, never()).uploadFile(eq("Home.md"), any());
+        verify(mockApiClient).uploadFile(eq("About.md"), any(), any());
+        verify(mockApiClient, never()).uploadFile(eq("Home.md"), any(), any());
     }
 
     @Test
@@ -236,7 +236,7 @@ class WikiSyncerTest {
         // Old ghost document must be removed from LightRAG
         verify(mockApiClient).deleteDocument(oldDocId);
         // New version must be uploaded
-        verify(mockApiClient).uploadFile(eq("Home.md"), any());
+        verify(mockApiClient).uploadFile(eq("Home.md"), any(), any());
     }
 
     @Test
@@ -339,7 +339,7 @@ class WikiSyncerTest {
             writeAndPush(workGit, "New.md", "New page");
         }
         org.mockito.Mockito.doThrow(new IOException("simulated upload failure"))
-                .when(mockApiClient).uploadFile(eq("New.md"), any());
+                .when(mockApiClient).uploadFile(eq("New.md"), any(), any());
 
         SyncResult result = syncer.sync();
 
