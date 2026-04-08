@@ -40,6 +40,7 @@
         <module>lightrag-core</module>
         <module>lightrag-spring-boot-starter</module>
         <module>lightrag-spring-boot-demo</module>
+        <module>lightrag-wiki-sync</module>
     </modules>
 
     <properties>

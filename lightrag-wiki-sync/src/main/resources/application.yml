@@ -1,0 +1,46 @@
+server:
+  # Run on a different port so this service can coexist with the LightRAG demo (8080)
+  port: 8090
+
+spring:
+  application:
+    name: lightrag-wiki-sync
+
+wiki:
+  sync:
+    # Set to "false" to disable all scheduled sync without stopping the application
+    enabled: true
+
+    # Cron expression for the scheduled sync job (Spring cron, 6 fields)
+    # Default: daily at 02:00 server time
+    schedule: "0 0 2 * * ?"
+
+    # -------------------------------------------------------------------------
+    # Wiki repository connection — override via environment variables in prod
+    # -------------------------------------------------------------------------
+    remote-url: ${WIKI_REMOTE_URL:https://github.com}
+    project-path: ${WIKI_PROJECT_PATH:pctapia/professional-programming}
+
+    # REQUIRED: personal access token with read_repository scope.
+    # Never commit a real token here — always use the env var.
+    access-token: ${WIKI_ACCESS_TOKEN:}
+
+    # -------------------------------------------------------------------------
+    # Local clone & LightRAG target
+    # -------------------------------------------------------------------------
+    local-clone-path: ${WIKI_CLONE_PATH:/tmp/lightrag-wiki-sync}
+    lightrag-api-url: ${LIGHTRAG_API_URL:http://localhost:8080}
+    workspace-id: ${LIGHTRAG_WORKSPACE_ID:corporate-wiki}
+
+    # Set to true for the very first run to seed the workspace immediately on startup
+    sync-on-startup: ${WIKI_SYNC_ON_STARTUP:false}
+
+    # File extensions treated as wiki pages; all other files in the repo are ignored
+    file-extensions:
+      - .md
+      - .adoc
+
+logging:
+  level:
+    io.github.lightrag.wiki: INFO
+    org.eclipse.jgit: WARN
