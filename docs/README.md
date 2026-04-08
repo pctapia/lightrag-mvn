@@ -10,6 +10,7 @@ REST API reference and usage guides
 
 ### [`/architecture`](./architecture)
 System design, storage options, and architectural decisions
+- **[LIGHTRAG_ALGORITHM.md](./architecture/LIGHTRAG_ALGORITHM.md)** - What LightRAG is, how it differs from standard RAG, and how it compares to LangChain/Spring AI
 - **[AI_FRAMEWORKS.md](./architecture/AI_FRAMEWORKS.md)** - AI libraries, LLM/embedding model integration, query modes, and chunking strategies
 - **[STORAGE_ARCHITECTURE.md](./architecture/STORAGE_ARCHITECTURE.md)** - Database implementations (IN_MEMORY, PostgreSQL, MySQL+Milvus+Neo4j)
 - **[DB_OPTION_EVALUATION.md](./architecture/DB_OPTION_EVALUATION.md)** - Storage comparison: Redis vs PostgreSQL vs Qdrant vs Milvus
