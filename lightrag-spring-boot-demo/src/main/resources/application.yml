@@ -1,7 +1,7 @@
 lightrag:
   chat:
     base-url: ${LIGHTRAG_CHAT_BASE_URL:http://localhost:11434/v1/}
-    model: ${LIGHTRAG_CHAT_MODEL:qwen2.5:7b}
+    model: ${LIGHTRAG_CHAT_MODEL:llama3.2:3b}
     api-key: ${LIGHTRAG_CHAT_API_KEY:dummy}
     timeout: ${LIGHTRAG_CHAT_TIMEOUT:PT30S}
   embedding:
@@ -32,6 +32,11 @@ lightrag:
     async-ingest-enabled: ${LIGHTRAG_DEMO_ASYNC_INGEST_ENABLED:true}
   storage:
     type: ${LIGHTRAG_STORAGE_TYPE:in-memory}
+
+spring:
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
 
 management:
   endpoints:

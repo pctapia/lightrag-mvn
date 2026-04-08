@@ -161,6 +161,8 @@ public final class KnowledgeExtractor {
 
     private static String normalizeResponse(String response) {
         var normalized = Objects.requireNonNull(response, "response").strip();
+
+        // Strip markdown code fences (```json ... ``` or ``` ... ```)
         if (normalized.startsWith("```")) {
             var firstNewline = normalized.indexOf('\n');
             if (firstNewline >= 0) {
@@ -169,8 +171,18 @@ public final class KnowledgeExtractor {
             if (normalized.endsWith("```")) {
                 normalized = normalized.substring(0, normalized.length() - 3);
             }
+            return normalized.strip();
         }
-        return normalized.strip();
+
+        // If the model prefixed or suffixed the JSON with plain text, extract the
+        // outermost {...} block so the parser still gets valid JSON.
+        var start = normalized.indexOf('{');
+        var end = normalized.lastIndexOf('}');
+        if (start > 0 && end > start) {
+            return normalized.substring(start, end + 1);
+        }
+
+        return normalized;
     }
 
     private static JsonNode topLevelArray(JsonNode root, String fieldName) {
@@ -211,7 +223,7 @@ public final class KnowledgeExtractor {
     }
 
     private static List<String> parseAliases(JsonNode aliasesNode) {
-        if (!aliasesNode.isArray()) {
+        if (aliasesNode == null || !aliasesNode.isArray()) {
             return List.of();
         }
 

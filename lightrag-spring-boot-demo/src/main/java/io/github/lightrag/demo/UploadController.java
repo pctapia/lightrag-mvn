@@ -40,9 +40,10 @@ class UploadController {
         @RequestPart("files") List<MultipartFile> files,
         @RequestParam(name = "async", required = false) Boolean async,
         @RequestParam(name = "preset", required = false) IngestPreset preset,
+        @RequestParam(name = "file_path", required = false) String filePath,
         HttpServletRequest request
     ) {
-        var sources = uploadedDocumentMapper.toSources(files);
+        var sources = uploadedDocumentMapper.toSources(files, filePath);
         var runAsync = async == null ? properties.getDemo().isAsyncIngestEnabled() : async;
         var workspaceId = workspaceResolver.resolve(request);
         var ingestOptions = defaultIngestOptions(properties, preset);

@@ -30,6 +30,10 @@ final class UploadedDocumentMapper {
     );
 
     List<RawDocumentSource> toSources(List<MultipartFile> files) {
+        return toSources(files, null);
+    }
+
+    List<RawDocumentSource> toSources(List<MultipartFile> files, String filePath) {
         if (files == null || files.isEmpty()) {
             throw new IllegalArgumentException("files must not be empty");
         }
@@ -43,8 +47,10 @@ final class UploadedDocumentMapper {
         if (totalBytes > MAX_TOTAL_BYTES) {
             throw new IllegalArgumentException("total upload too large");
         }
+        // file_path applies only to single-file uploads (wiki-sync sends one file per request)
+        var resolvedFilePath = (filePath != null && !filePath.isBlank() && files.size() == 1) ? filePath.strip() : null;
         var sources = files.stream()
-            .map(this::toSource)
+            .map(file -> toSource(file, resolvedFilePath))
             .toList();
         var duplicateId = sources.stream()
             .collect(java.util.stream.Collectors.groupingBy(RawDocumentSource::sourceId, java.util.stream.Collectors.counting()))
@@ -58,7 +64,7 @@ final class UploadedDocumentMapper {
         return sources;
     }
 
-    private RawDocumentSource toSource(MultipartFile file) {
+    private RawDocumentSource toSource(MultipartFile file, String filePath) {
         if (file == null) {
             throw new IllegalArgumentException("file must not be null");
         }
@@ -76,16 +82,20 @@ final class UploadedDocumentMapper {
             }
         }
 
+        var metadata = new java.util.HashMap<String, String>();
+        metadata.put("source", "upload");
+        metadata.put("fileName", filename);
+        metadata.put("contentType", normalizeContentType(file.getContentType(), filename));
+        if (filePath != null) {
+            metadata.put("file_path", filePath);
+        }
+
         return new RawDocumentSource(
             buildDocumentId(filename, bytes),
             filename,
             normalizeContentType(file.getContentType(), filename),
             bytes,
-            Map.of(
-                "source", "upload",
-                "fileName", filename,
-                "contentType", normalizeContentType(file.getContentType(), filename)
-            )
+            Map.copyOf(metadata)
         );
     }
 
