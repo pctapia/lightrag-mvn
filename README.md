@@ -116,6 +116,81 @@ Rules in this model:
 - storage isolation stays behind `WorkspaceStorageProvider`; `workspaceId` is not added to the public store SPI
 - `loadFromSnapshot(...)` remains a legacy single-workspace builder feature and is blocked for `workspaceStorage(...)`
 
+## Wiki Sync
+
+The `lightrag-wiki-sync` module is a standalone Spring Boot service (port 8090) that continuously mirrors a Git-hosted wiki into a running LightRAG instance.
+
+It clones the wiki repository on first run and then pulls and diffs on every subsequent run, uploading only new or changed pages and deleting removed ones. A persistent document registry (`path → docId`) ensures that modified pages replace their old LightRAG document rather than creating ghost copies.
+
+**Supported hosts:** any Git repository accessible over HTTPS — GitHub, GitLab, Bitbucket, or self-hosted. Both platform wiki conventions (`.wiki.git`) and regular repositories are supported.
+
+### Configuration
+
+```yaml
+wiki:
+  sync:
+    # Option A — full URL (used as-is, no suffix appended)
+    git-url: ${WIKI_GIT_URL:https://github.com/my-org/my-repo.git}
+
+    # Option B — platform wiki convention (appends .wiki.git automatically)
+    # remote-url: ${WIKI_REMOTE_URL:https://github.com/my-org}
+    # project-path: ${WIKI_PROJECT_PATH:my-repo}
+
+    access-token: ${WIKI_ACCESS_TOKEN:}          # leave blank for public repos
+    local-clone-path: ${WIKI_CLONE_PATH:/tmp/lightrag-wiki-sync}
+    lightrag-api-url: ${LIGHTRAG_API_URL:http://localhost:8080}
+    workspace-id: ${LIGHTRAG_WORKSPACE_ID:default}
+    sync-on-startup: ${WIKI_SYNC_ON_STARTUP:true}
+    schedule: "0 0 2 * * ?"                      # Spring cron, default: nightly at 02:00
+    file-extensions:
+      - .md
+      - .adoc
+```
+
+### Running
+
+```bash
+mvn spring-boot:run -pl lightrag-wiki-sync
+```
+
+### Endpoints
+
+- `POST /sync/trigger` — run a sync cycle immediately, returns a `SyncResult`
+- `GET /sync/status` — last sync result
+- `GET /sync/config` — active configuration (URLs, workspace, schedule)
+- `GET /actuator/health`
+
+### SyncResult
+
+```json
+{
+  "filesUploaded": 22,
+  "filesDeleted": 0,
+  "filesFailed": 0,
+  "fromCommit": null,
+  "toCommit": "fb746374ee916e32616f32d97dca9d0e2d8e0f66",
+  "duration": "PT0.69S",
+  "errors": [],
+  "success": true
+}
+```
+
+The sync state is not advanced when `filesFailed > 0`, so the next run automatically retries the same commit range.
+
+### Re-seeding a workspace
+
+Because the demo uses in-memory storage by default, all indexed data is lost on restart. Delete the state files to force a full re-upload after restarting the demo:
+
+```bash
+rm /tmp/lightrag-wiki-sync/.wiki-sync-state
+rm /tmp/lightrag-wiki-sync/.wiki-doc-registry.json
+curl -X POST http://localhost:8090/sync/trigger
+```
+
+For full usage details see [docs/guides/WIKI_SYNC_USAGE_GUIDE.md](docs/guides/WIKI_SYNC_USAGE_GUIDE.md).
+
+---
+
 ## Spring Boot
 
 The repository now includes two Spring-focused modules:
@@ -123,6 +198,7 @@ The repository now includes two Spring-focused modules:
 - `lightrag-core`: the framework-neutral SDK
 - `lightrag-spring-boot-starter`: Spring Boot auto-configuration for `LightRag`
 - `lightrag-spring-boot-demo`: a minimal REST demo application
+- `lightrag-wiki-sync`: a Git-based wiki synchronization service
 
 The starter auto-configures `LightRag` from `application.yml` when you provide:
 

@@ -2,7 +2,7 @@
 
 ## Problem statement
 
-When a GitLab wiki page is deleted (or renamed/modified), the sync module detects
+When a wiki page is deleted (or renamed/modified), the sync module detects
 it via `git diff`. The question is: **what document ID should be passed to
 `LightRag.deleteByDocumentId()`?**
 
@@ -53,7 +53,7 @@ deletion mechanism described here fixes both MODIFY and DELETE.
 ┌────────────────────────────────────────────────────────────┐
 │  lightrag-wiki-sync                                         │
 │                                                             │
-│  GitLabWikiSyncer                                           │
+│  WikiSyncer                                                 │
 │   • git diff → DiffEntry(DELETE | MODIFY | ADD | RENAME)   │
 │   • WikiDocRegistry: filePath → docId  (.wiki-doc-registry) │
 │   • replicates buildDocumentId() formula locally            │

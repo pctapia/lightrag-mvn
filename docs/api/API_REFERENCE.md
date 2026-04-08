@@ -211,7 +211,7 @@ Query the RAG system. Returns the full response after generation completes (buff
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `query` | string | yes | The question or search string |
-| `mode` | enum | no | Retrieval mode: `hybrid`, `local`, `global`, `naive` |
+| `mode` | enum | no | Retrieval mode (case-insensitive): `naive`, `local`, `global`, `hybrid`, `mix`, `multi-hop`, `bypass`. Default: `mix` |
 | `topK` | int | no | Max number of chunks retrieved |
 | `chunkTopK` | int | no | Chunk-level top-K |
 | `maxEntityTokens` | int | no | Token budget for entity context |

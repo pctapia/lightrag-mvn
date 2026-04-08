@@ -82,7 +82,7 @@ This constructs the clone URL as:
 https://github.com/my-org/my-repo.wiki.git
 ```
 
-> **Note:** GitHub uses `x-access-token` as the PAT username. The current `gitLabCredentials()` method in `WikiSyncer` uses `oauth2` which is the GitLab convention. For GitHub you need to change the username — see the credentials note in `WikiSyncer.java`.
+> **Note:** Both GitHub and GitLab are supported out of the box. The `credentials()` method in `WikiSyncer` uses `x-access-token` as the PAT username, which is accepted by both platforms. For public repositories, leave `access-token` blank and no authentication is sent.
 
 ### GitLab wiki
 

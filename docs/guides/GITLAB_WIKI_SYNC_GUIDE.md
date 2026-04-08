@@ -1,5 +1,7 @@
 # GitLab Wiki Synchronization Guide
 
+> **Historical design document.** This guide captures the original architecture evaluation and rationale. The recommended JGit-based approach (Option 1) has since been implemented as `WikiSyncer` in the `lightrag-wiki-sync` module. For practical usage instructions see [WIKI_SYNC_USAGE_GUIDE.md](WIKI_SYNC_USAGE_GUIDE.md).
+
 ## Overview
 
 This guide shows how to sync a GitLab wiki (`.md` and `.adoc` files) with LightRAG for semantic search.

@@ -10,12 +10,14 @@ REST API reference and usage guides
 
 ### [`/architecture`](./architecture)
 System design, storage options, and architectural decisions
+- **[AI_FRAMEWORKS.md](./architecture/AI_FRAMEWORKS.md)** - AI libraries, LLM/embedding model integration, query modes, and chunking strategies
 - **[STORAGE_ARCHITECTURE.md](./architecture/STORAGE_ARCHITECTURE.md)** - Database implementations (IN_MEMORY, PostgreSQL, MySQL+Milvus+Neo4j)
 - **[DB_OPTION_EVALUATION.md](./architecture/DB_OPTION_EVALUATION.md)** - Storage comparison: Redis vs PostgreSQL vs Qdrant vs Milvus
 - **[WIKI_SYNC_DELETION.md](./architecture/WIKI_SYNC_DELETION.md)** - Ghost-document problem and deletion design for the wiki sync module
 
 ### [`/guides`](./guides)
 How-to guides and integration tutorials
+- **[RUNNING_THE_PROJECT.md](./guides/RUNNING_THE_PROJECT.md)** - Build, start, and query the stack locally; connect to a corporate AI endpoint
 - **[WIKI_SYNC_USAGE_GUIDE.md](./guides/WIKI_SYNC_USAGE_GUIDE.md)** - End-to-end guide: connect a GitHub/GitLab wiki, run sync, query indexed content
 - **[GITLAB_WIKI_SYNC_GUIDE.md](./guides/GITLAB_WIKI_SYNC_GUIDE.md)** - Original design guide covering architecture options and rationale
 
