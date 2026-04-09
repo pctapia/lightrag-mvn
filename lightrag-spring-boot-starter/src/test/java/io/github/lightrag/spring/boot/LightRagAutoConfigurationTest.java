@@ -238,16 +238,22 @@ class LightRagAutoConfigurationTest {
                 "lightrag.chat.base-url=http://localhost:11434/v1/",
                 "lightrag.chat.model=qwen2.5:7b",
                 "lightrag.chat.api-key=dummy",
+                // Explicitly pin optional properties to their library defaults so that
+                // LIGHTRAG_* environment variables exported in the developer's shell
+                // (e.g. from Execution.txt) do not interfere with the assertions below.
+                "lightrag.chat.timeout=PT2M",
                 "lightrag.embedding.base-url=http://localhost:11434/v1/",
                 "lightrag.embedding.model=nomic-embed-text",
                 "lightrag.embedding.api-key=dummy",
-                "lightrag.storage.type=in-memory"
+                "lightrag.embedding.timeout=PT2M",
+                "lightrag.storage.type=in-memory",
+                "lightrag.query.automatic-keyword-extraction=true"
             )
             .run(context -> {
                 var properties = context.getBean(LightRagProperties.class);
 
-                assertThat(properties.getChat().getTimeout()).isEqualTo(Duration.ofSeconds(30));
-                assertThat(properties.getEmbedding().getTimeout()).isEqualTo(Duration.ofSeconds(30));
+                assertThat(properties.getChat().getTimeout()).isEqualTo(Duration.ofMinutes(2));
+                assertThat(properties.getEmbedding().getTimeout()).isEqualTo(Duration.ofMinutes(2));
                 assertThat(properties.getIndexing().getChunking().getWindowSize()).isEqualTo(1_000);
                 assertThat(properties.getIndexing().getChunking().getOverlap()).isEqualTo(100);
                 assertThat(properties.getIndexing().getEmbeddingBatchSize()).isZero();

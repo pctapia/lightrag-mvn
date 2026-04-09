@@ -59,7 +59,7 @@ public class LightRagProperties {
         private String baseUrl;
         private String model;
         private String apiKey;
-        private Duration timeout = Duration.ofSeconds(30);
+        private Duration timeout = Duration.ofMinutes(2);
 
         public String getBaseUrl() {
             return baseUrl;
