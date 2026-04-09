@@ -106,14 +106,18 @@ public final class DocumentParsingOrchestrator {
     private static boolean isSupportedPlainTextMediaType(String mediaType) {
         return "text/plain".equals(mediaType)
             || "text/markdown".equals(mediaType)
-            || "text/x-markdown".equals(mediaType);
+            || "text/x-markdown".equals(mediaType)
+            || "text/asciidoc".equals(mediaType)
+            || "text/x-asciidoc".equals(mediaType);
     }
 
     private static boolean hasPlainTextExtension(String fileName) {
         var normalized = Objects.requireNonNull(fileName, "fileName").toLowerCase(Locale.ROOT);
         return normalized.endsWith(".txt")
             || normalized.endsWith(".md")
-            || normalized.endsWith(".markdown");
+            || normalized.endsWith(".markdown")
+            || normalized.endsWith(".adoc")
+            || normalized.endsWith(".asciidoc");
     }
 
     private static boolean isComplexDocumentSource(RawDocumentSource source) {

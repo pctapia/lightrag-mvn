@@ -23,7 +23,7 @@ final class UploadedDocumentMapper {
     private static final long MAX_FILE_BYTES = 1_048_576L;
     private static final long MAX_TOTAL_BYTES = 4_194_304L;
     private static final List<String> SUPPORTED_EXTENSIONS = List.of(
-        ".txt", ".md", ".markdown",
+        ".txt", ".md", ".markdown", ".adoc", ".asciidoc",
         ".pdf", ".doc", ".docx", ".ppt", ".pptx",
         ".html", ".htm",
         ".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp"
@@ -175,8 +175,11 @@ final class UploadedDocumentMapper {
         return lowerCaseName.endsWith(".txt")
             || lowerCaseName.endsWith(".md")
             || lowerCaseName.endsWith(".markdown")
+            || lowerCaseName.endsWith(".adoc")
+            || lowerCaseName.endsWith(".asciidoc")
             || MediaTypeValues.TEXT_PLAIN.equals(normalizeContentType(contentType, filename))
-            || "text/markdown".equals(normalizeContentType(contentType, filename));
+            || "text/markdown".equals(normalizeContentType(contentType, filename))
+            || "text/asciidoc".equals(normalizeContentType(contentType, filename));
     }
 
     private static String normalizeContentType(String contentType, String filename) {
@@ -186,6 +189,9 @@ final class UploadedDocumentMapper {
         var lowerCaseName = filename.toLowerCase(Locale.ROOT);
         if (lowerCaseName.endsWith(".md") || lowerCaseName.endsWith(".markdown")) {
             return "text/markdown";
+        }
+        if (lowerCaseName.endsWith(".adoc") || lowerCaseName.endsWith(".asciidoc")) {
+            return "text/asciidoc";
         }
         if (lowerCaseName.endsWith(".pdf")) {
             return "application/pdf";
