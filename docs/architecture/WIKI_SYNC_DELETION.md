@@ -1,5 +1,24 @@
 # Wiki Sync — Document Deletion Design
 
+## Summary
+
+LightRAG generates document IDs as `<filename>-<sha>`, where the SHA covers both the filename and the file content. When a file is modified, its SHA changes, so the new upload gets a different ID. Without tracking the old ID, the old version stays in the index as a **ghost document** — never deleted, never updated.
+
+The fix is the **`WikiDocRegistry`**: a persistent JSON file (`.wiki-doc-registry.json`) that maps every known git file path to the document ID used when that file was last uploaded.
+
+On every ADD or MODIFY, the registry stores (or updates) the `path → docId` mapping. When `WikiSyncer` detects a MODIFY or DELETE event:
+
+1. Looks up the old doc ID in the registry by file path
+2. Calls `DELETE /documents/{docId}` on the LightRAG API to remove the old version
+3. Uploads the new version (MODIFY only)
+4. Updates the registry with the new `path → docId` mapping
+
+For DELETE events, the registry is the only way to recover the doc ID — the file no longer exists in the repo, so the ID cannot be recomputed.
+
+The sections below describe the ID formula, the full architecture, end-to-end flows, and failure handling in detail.
+
+---
+
 ## Problem statement
 
 When a wiki page is deleted (or renamed/modified), the sync module detects
