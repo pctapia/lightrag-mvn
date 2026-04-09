@@ -17,12 +17,16 @@ This guide covers how to build, start, and query the LightRAG stack locally, and
 
 ## 1. Build
 
-Rebuild all modules before the first run, or after changing `lightrag-core`:
+Build and install all modules from the project root:
+
+```bash
+mvn install -DskipTests -q
+```
+
+If you only need to rebuild a specific module after a change (e.g. `lightrag-core`), you can target it individually — but run the full install first so the parent POM is registered in your local Maven cache:
 
 ```bash
 mvn install -pl lightrag-core -DskipTests -q
-mvn install -pl lightrag-spring-boot-demo -DskipTests -q
-mvn install -pl lightrag-wiki-sync -DskipTests -q
 ```
 
 ---
@@ -35,6 +39,8 @@ export LIGHTRAG_CHAT_TIMEOUT=PT120S
 export LIGHTRAG_QUERY_AUTOMATIC_KEYWORD_EXTRACTION=false
 mvn spring-boot:run -pl lightrag-spring-boot-demo
 ```
+
+> **Environment variables vs YAML properties**: Spring Boot maps environment variables to `application.yml` properties using relaxed binding — dots and hyphens become underscores and the name is uppercased. So `LIGHTRAG_QUERY_AUTOMATIC_KEYWORD_EXTRACTION` is the environment variable form of `lightrag.query.automatic-keyword-extraction`. Environment variables take precedence over `application.yml`, so exporting a variable before startup overrides the default defined in the config file. Any `lightrag.*` property in `application.yml` can be overridden this way.
 
 Wait until the log shows the application is listening on port 8080 before proceeding.
 

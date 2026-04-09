@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.dargoner</groupId>
-    <artifactId>lightrag-java</artifactId>
+    <artifactId>lightrag-mvn</artifactId>
     <version>0.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>LightRAG Java</name>
+    <name>LightRAG MVN</name>
     <description>Java implementation of LightRAG with indexing, retrieval, and storage integrations</description>
-    <url>https://github.com/dargoner/lightrag-java</url>
+    <url>https://github.com/dargoner/lightrag-mvn</url>
 
     <licenses>
         <license>
@@ -31,9 +31,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/dargoner/lightrag-java.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/dargoner/lightrag-java.git</developerConnection>
-        <url>https://github.com/dargoner/lightrag-java</url>
+        <connection>scm:git:https://github.com/dargoner/lightrag-mvn.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/dargoner/lightrag-mvn.git</developerConnection>
+        <url>https://github.com/dargoner/lightrag-mvn</url>
     </scm>
 
     <modules>

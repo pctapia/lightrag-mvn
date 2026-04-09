@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>io.github.dargoner</groupId>
-        <artifactId>lightrag-java</artifactId>
+        <artifactId>lightrag-mvn</artifactId>
         <version>0.3.0-SNAPSHOT</version>
     </parent>
 

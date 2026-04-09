@@ -746,7 +746,7 @@ Deploy as separate microservice with its own API for triggering scrapes.
 
 Add scraper module to `lightrag-spring-boot-demo`:
 ```
-lightrag-java/
+lightrag-mvn/
 ├── lightrag-core/
 ├── lightrag-spring-boot-starter/
 ├── lightrag-spring-boot-demo/

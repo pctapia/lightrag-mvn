@@ -1,4 +1,4 @@
-# lightrag-java
+# lightrag-mvn
 
 ![Java 17](https://img.shields.io/badge/Java-17-437291)
 ![Maven](https://img.shields.io/badge/Maven-3.9+-C71A36)
