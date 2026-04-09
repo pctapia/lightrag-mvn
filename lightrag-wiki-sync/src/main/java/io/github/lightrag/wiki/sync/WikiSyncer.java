@@ -177,7 +177,7 @@ public class WikiSyncer {
     // -------------------------------------------------------------------------
 
     private SyncResult fullSync(Path clonePath, String headSha, Instant start) {
-        int uploaded = 0, failed = 0;
+        int uploaded = 0, failed = 0, skipped = 0;
         List<String> errors = new ArrayList<>();
 
         try (Stream<Path> files = Files.walk(clonePath)) {
@@ -192,8 +192,12 @@ public class WikiSyncer {
             for (Path file : wikiFiles) {
                 String relativePath = clonePath.relativize(file).toString();
                 try {
-                    uploadAndRegister(file, relativePath);
-                    uploaded++;
+                    String docId = uploadAndRegister(file, relativePath);
+                    if (docId != null) {
+                        uploaded++;
+                    } else {
+                        skipped++;
+                    }
                 } catch (IOException e) {
                     failed++;
                     errors.add(relativePath + ": " + e.getMessage());
@@ -206,7 +210,7 @@ public class WikiSyncer {
             failed++;
         }
 
-        return new SyncResult(uploaded, 0, failed, 0, null, headSha, elapsed(start), errors);
+        return new SyncResult(uploaded, 0, failed, skipped, null, headSha, elapsed(start), errors);
     }
 
     // -------------------------------------------------------------------------
@@ -226,7 +230,7 @@ public class WikiSyncer {
                 .setNewTree(newTree)
                 .call();
 
-        int uploaded = 0, deleted = 0, failed = 0;
+        int uploaded = 0, deleted = 0, failed = 0, skipped = 0;
         List<String> errors = new ArrayList<>();
 
         for (DiffEntry diff : diffs) {
@@ -240,8 +244,12 @@ public class WikiSyncer {
                 case ADD, COPY -> {
                     Path file = clonePath.resolve(filePath);
                     try {
-                        uploadAndRegister(file, filePath);
-                        uploaded++;
+                        String docId = uploadAndRegister(file, filePath);
+                        if (docId != null) {
+                            uploaded++;
+                        } else {
+                            skipped++;
+                        }
                     } catch (IOException e) {
                         failed++;
                         errors.add(filePath + ": " + e.getMessage());
@@ -257,8 +265,12 @@ public class WikiSyncer {
 
                     Path file = clonePath.resolve(filePath);
                     try {
-                        uploadAndRegister(file, filePath);
-                        uploaded++;
+                        String docId = uploadAndRegister(file, filePath);
+                        if (docId != null) {
+                            uploaded++;
+                        } else {
+                            skipped++;
+                        }
                     } catch (IOException e) {
                         failed++;
                         errors.add(filePath + ": " + e.getMessage());
@@ -275,9 +287,13 @@ public class WikiSyncer {
 
                     Path file = clonePath.resolve(diff.getNewPath());
                     try {
-                        uploadAndRegister(file, diff.getNewPath());
-                        uploaded++;
-                        log.info("Renamed {} → {}", diff.getOldPath(), diff.getNewPath());
+                        String docId = uploadAndRegister(file, diff.getNewPath());
+                        if (docId != null) {
+                            uploaded++;
+                            log.info("Renamed {} → {}", diff.getOldPath(), diff.getNewPath());
+                        } else {
+                            skipped++;
+                        }
                     } catch (IOException e) {
                         failed++;
                         errors.add(diff.getNewPath() + " (rename): " + e.getMessage());
@@ -308,7 +324,7 @@ public class WikiSyncer {
             }
         }
 
-        return new SyncResult(uploaded, deleted, failed, 0, fromSha, toSha, elapsed(start), errors);
+        return new SyncResult(uploaded, deleted, failed, skipped, fromSha, toSha, elapsed(start), errors);
     }
 
     // -------------------------------------------------------------------------
@@ -321,11 +337,19 @@ public class WikiSyncer {
      *
      * @return the computed document ID
      */
+    /**
+     * Returns the computed document ID, or {@code null} if the file was skipped
+     * because its content is blank (empty wiki placeholder files are ignored).
+     */
     private String uploadAndRegister(Path file, String gitFilePath) throws IOException {
         if (!Files.exists(file)) {
             throw new IOException("File not found on disk: " + file);
         }
         byte[] content = Files.readAllBytes(file);
+        if (isBlankContent(content)) {
+            log.warn("Skipping {} — file is empty or contains only whitespace", gitFilePath);
+            return null;
+        }
         String fileName = file.getFileName().toString();
         String docId = DocumentIdComputer.compute(fileName, content);
 
@@ -334,6 +358,18 @@ public class WikiSyncer {
         registry.put(gitFilePath, docId);
         log.info("Uploaded: {} (docId={})", gitFilePath, abbrev(docId));
         return docId;
+    }
+
+    private static boolean isBlankContent(byte[] content) {
+        if (content.length == 0) {
+            return true;
+        }
+        for (byte b : content) {
+            if (b != ' ' && b != '\t' && b != '\n' && b != '\r') {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
