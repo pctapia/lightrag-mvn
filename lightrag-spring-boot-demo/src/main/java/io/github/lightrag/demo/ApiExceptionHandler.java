@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -38,7 +39,9 @@ class ApiExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     ResponseEntity<ErrorResponse> handleResponseStatus(ResponseStatusException exception) {
         var message = exception.getReason() == null ? exception.getMessage() : exception.getReason();
-        return ResponseEntity.status(exception.getStatusCode()).body(new ErrorResponse(message));
+        return ResponseEntity.status(exception.getStatusCode())
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(new ErrorResponse(message));
     }
 
     @ExceptionHandler(MissingServletRequestPartException.class)
@@ -62,6 +65,7 @@ class ApiExceptionHandler {
             return handleResponseStatus(responseStatusException);
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .contentType(MediaType.APPLICATION_JSON)
             .body(new ErrorResponse(exception.getMessage() == null ? "unexpected server error" : exception.getMessage()));
     }
 
