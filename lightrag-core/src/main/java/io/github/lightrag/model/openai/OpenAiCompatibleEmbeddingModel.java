@@ -8,6 +8,8 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -17,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class OpenAiCompatibleEmbeddingModel implements EmbeddingModel {
+    private static final Logger log = LoggerFactory.getLogger(OpenAiCompatibleEmbeddingModel.class);
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final MediaType JSON = MediaType.get("application/json");
 
@@ -40,6 +43,7 @@ public final class OpenAiCompatibleEmbeddingModel implements EmbeddingModel {
             .readTimeout(effectiveTimeout)
             .writeTimeout(effectiveTimeout)
             .build();
+        log.info("EmbeddingModel initialized: baseUrl={}, model={}, timeout={}", this.baseUrl, this.modelName, effectiveTimeout);
     }
 
     @Override
@@ -55,14 +59,17 @@ public final class OpenAiCompatibleEmbeddingModel implements EmbeddingModel {
         );
 
         try {
+            var url = baseUrl + "embeddings";
+            log.debug("Embedding request: url={}, model={}, inputs={}", url, modelName, inputs.size());
             var httpRequest = new Request.Builder()
-                .url(baseUrl + "embeddings")
+                .url(url)
                 .header("Authorization", "Bearer " + apiKey)
                 .header("Content-Type", "application/json")
                 .post(RequestBody.create(OBJECT_MAPPER.writeValueAsBytes(payload), JSON))
                 .build();
             try (var response = httpClient.newCall(httpRequest).execute()) {
                 if (!response.isSuccessful()) {
+                    log.error("Embedding request failed: url={}, model={}, status={}", url, modelName, response.code());
                     throw new ModelException("Embedding request failed with status " + response.code());
                 }
                 var body = response.body();
@@ -72,6 +79,7 @@ public final class OpenAiCompatibleEmbeddingModel implements EmbeddingModel {
                 return extractEmbeddings(OBJECT_MAPPER.readTree(body.byteStream()));
             }
         } catch (IOException exception) {
+            log.error("Embedding request failed: url={}, model={}, error={}", baseUrl + "embeddings", modelName, exception.getMessage());
             throw new ModelException("Embedding request failed", exception);
         }
     }
