@@ -13,6 +13,7 @@ import io.github.lightrag.storage.SnapshotStore;
 import io.github.lightrag.storage.VectorStore;
 import io.github.lightrag.storage.neo4j.Neo4jGraphSnapshot;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.MySQLContainer;
@@ -31,6 +32,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@Tag("testcontainers")
 class MySqlMilvusNeo4jStorageProviderTest {
     @Test
     void rollsBackMySqlRowsWhenProjectionFailsAfterCommit() {

@@ -245,6 +245,7 @@
                     <version>3.5.2</version>
                     <configuration>
                         <testFailureIgnore>false</testFailureIgnore>
+                        <excludedGroups>testcontainers</excludedGroups>
                     </configuration>
                 </plugin>
 
@@ -256,4 +257,23 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>testcontainers</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <configuration>
+                                <excludedGroups/>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 </project>

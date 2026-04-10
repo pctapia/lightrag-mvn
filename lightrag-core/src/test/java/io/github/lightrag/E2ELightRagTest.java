@@ -30,6 +30,7 @@ import io.github.lightrag.storage.postgres.PostgresStorageProvider;
 import io.github.lightrag.types.Document;
 import org.testcontainers.containers.Neo4jContainer;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.DockerClientFactory;
 import org.junit.jupiter.api.io.TempDir;
@@ -44,6 +45,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@Tag("testcontainers")
 class E2ELightRagTest {
     private static final String WORKSPACE = "default";
 

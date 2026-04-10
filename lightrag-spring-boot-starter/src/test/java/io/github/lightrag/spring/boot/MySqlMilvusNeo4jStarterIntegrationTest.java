@@ -6,6 +6,7 @@ import io.github.lightrag.model.EmbeddingModel;
 import io.github.lightrag.storage.HybridVectorStore;
 import io.github.lightrag.storage.VectorStore;
 import io.github.lightrag.storage.WorkspaceStorageProvider;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -29,6 +30,7 @@ import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers(disabledWithoutDocker = true)
+@Tag("testcontainers")
 class MySqlMilvusNeo4jStarterIntegrationTest {
     private static final Network NETWORK = Network.newNetwork();
     private static final DockerImageName ETCD_IMAGE = DockerImageName.parse("quay.io/coreos/etcd:v3.5.25");

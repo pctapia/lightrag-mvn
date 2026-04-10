@@ -11,6 +11,7 @@ import io.github.lightrag.storage.SnapshotStore;
 import io.github.lightrag.storage.VectorStore;
 import io.github.lightrag.storage.milvus.MilvusVectorConfig;
 import io.github.lightrag.storage.neo4j.Neo4jGraphConfig;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
@@ -30,6 +31,7 @@ import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers(disabledWithoutDocker = true)
+@Tag("testcontainers")
 class MySqlMilvusNeo4jStorageProviderSdkIntegrationTest {
     private static final Network NETWORK = Network.newNetwork();
     private static final DockerImageName ETCD_IMAGE = DockerImageName.parse("quay.io/coreos/etcd:v3.5.25");

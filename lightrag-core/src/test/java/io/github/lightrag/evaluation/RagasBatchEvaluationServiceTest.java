@@ -6,6 +6,7 @@ import io.github.lightrag.indexing.KnowledgeExtractor;
 import io.github.lightrag.model.ChatModel;
 import io.github.lightrag.model.EmbeddingModel;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.testcontainers.DockerClientFactory;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("testcontainers")
 class RagasBatchEvaluationServiceTest {
     @TempDir
     Path tempDir;

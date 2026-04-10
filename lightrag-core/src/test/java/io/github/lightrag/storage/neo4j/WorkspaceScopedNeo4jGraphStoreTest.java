@@ -3,6 +3,7 @@ package io.github.lightrag.storage.neo4j;
 import io.github.lightrag.api.WorkspaceScope;
 import io.github.lightrag.storage.GraphStore;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.GraphDatabase;
@@ -16,6 +17,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers(disabledWithoutDocker = true)
+@Tag("testcontainers")
 class WorkspaceScopedNeo4jGraphStoreTest {
     @Container
     private static final Neo4jContainer<?> NEO4J = new Neo4jContainer<>("neo4j:5-community")

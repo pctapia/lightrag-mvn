@@ -7,6 +7,7 @@ import io.github.lightrag.storage.ChunkStore;
 import io.github.lightrag.storage.DocumentStatusStore;
 import io.github.lightrag.storage.DocumentStore;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.MySQLContainer;
@@ -20,6 +21,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@Tag("testcontainers")
 class MySqlStoresTest {
     @Test
     void documentChunkAndStatusStoresRoundTripRecords() {

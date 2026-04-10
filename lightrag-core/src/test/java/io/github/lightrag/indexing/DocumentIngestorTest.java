@@ -12,6 +12,7 @@ import io.github.lightrag.storage.postgres.PostgresStorageProvider;
 import io.github.lightrag.types.Chunk;
 import io.github.lightrag.types.Document;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@Tag("testcontainers")
 class DocumentIngestorTest {
     @Test
     void rejectsDuplicateDocumentIdsAlreadyInStorage() {
