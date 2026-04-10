@@ -12,7 +12,9 @@ import io.github.lightrag.storage.HybridVectorStore;
 import io.github.lightrag.storage.SnapshotStore;
 import io.github.lightrag.storage.VectorStore;
 import io.github.lightrag.storage.neo4j.Neo4jGraphSnapshot;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -424,6 +426,7 @@ class MySqlMilvusNeo4jStorageProviderTest {
     }
 
     private static MySqlStorageConfig startedConfig(MySQLContainer<?> container) {
+        Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
         container.start();
         return new MySqlStorageConfig(
             container.getJdbcUrl(),

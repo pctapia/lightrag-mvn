@@ -6,7 +6,9 @@ import io.github.lightrag.api.DocumentStatus;
 import io.github.lightrag.storage.ChunkStore;
 import io.github.lightrag.storage.DocumentStatusStore;
 import io.github.lightrag.storage.DocumentStore;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -94,7 +96,8 @@ class MySqlStoresTest {
     @Test
     void bootstrapRejectsLegacySchemaWithoutWorkspaceColumns() throws Exception {
         try (var container = newMySqlContainer()) {
-            container.start();
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
+        container.start();
             var config = new MySqlStorageConfig(
                 container.getJdbcUrl(),
                 container.getUsername(),
@@ -136,6 +139,7 @@ class MySqlStoresTest {
     }
 
     private static StoreResources newStoreResources(MySQLContainer<?> container, String workspaceId) {
+        Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
         container.start();
         var config = new MySqlStorageConfig(
             container.getJdbcUrl(),

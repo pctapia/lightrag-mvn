@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 class MySqlMilvusNeo4jStarterIntegrationTest {
     private static final Network NETWORK = Network.newNetwork();
     private static final DockerImageName ETCD_IMAGE = DockerImageName.parse("quay.io/coreos/etcd:v3.5.25");

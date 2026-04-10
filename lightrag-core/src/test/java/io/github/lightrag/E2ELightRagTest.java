@@ -29,7 +29,9 @@ import io.github.lightrag.storage.postgres.PostgresStorageConfig;
 import io.github.lightrag.storage.postgres.PostgresStorageProvider;
 import io.github.lightrag.types.Document;
 import org.testcontainers.containers.Neo4jContainer;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.DockerClientFactory;
 import org.junit.jupiter.api.io.TempDir;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
@@ -398,6 +400,7 @@ class E2ELightRagTest {
                 DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres")
             )
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             container.start();
             var storage = new PostgresStorageProvider(
                 new PostgresStorageConfig(
@@ -440,6 +443,7 @@ class E2ELightRagTest {
                 DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres")
             )
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             container.start();
             var storage = new PostgresStorageProvider(
                 new PostgresStorageConfig(
@@ -483,6 +487,7 @@ class E2ELightRagTest {
             );
             var neo4j = new Neo4jContainer<>("neo4j:5-community").withAdminPassword("password")
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             postgres.start();
             neo4j.start();
             var storage = new PostgresNeo4jStorageProvider(
@@ -1423,6 +1428,7 @@ class E2ELightRagTest {
                 DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres")
             )
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             container.start();
             var storage = new PostgresStorageProvider(
                 new PostgresStorageConfig(
@@ -1492,6 +1498,7 @@ class E2ELightRagTest {
             );
             var neo4j = new Neo4jContainer<>("neo4j:5-community").withAdminPassword("password")
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             postgres.start();
             neo4j.start();
             var storage = new PostgresNeo4jStorageProvider(
@@ -1617,6 +1624,7 @@ class E2ELightRagTest {
                 DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres")
             )
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             container.start();
             var storage = new PostgresStorageProvider(
                 new PostgresStorageConfig(
@@ -1688,6 +1696,7 @@ class E2ELightRagTest {
             );
             var neo4j = new Neo4jContainer<>("neo4j:5-community").withAdminPassword("password")
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             postgres.start();
             neo4j.start();
             var storage = new PostgresNeo4jStorageProvider(
@@ -2554,6 +2563,7 @@ class E2ELightRagTest {
                 DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres")
             )
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             container.start();
             var storage = new PostgresStorageProvider(
                 new PostgresStorageConfig(
@@ -2622,6 +2632,7 @@ class E2ELightRagTest {
                 DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres")
             )
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             container.start();
 
             var snapshotStore = new FileSnapshotStore();
@@ -2672,6 +2683,7 @@ class E2ELightRagTest {
                 DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres")
             )
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             container.start();
             var storage = new PostgresStorageProvider(
                 new PostgresStorageConfig(
@@ -2717,6 +2729,7 @@ class E2ELightRagTest {
             );
             var neo4j = new Neo4jContainer<>("neo4j:5-community").withAdminPassword("password")
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             postgres.start();
             neo4j.start();
             var storage = new PostgresNeo4jStorageProvider(
@@ -2793,6 +2806,7 @@ class E2ELightRagTest {
             );
             var neo4j = new Neo4jContainer<>("neo4j:5-community").withAdminPassword("password")
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             postgres.start();
             neo4j.start();
             var storage = new PostgresNeo4jStorageProvider(
@@ -2870,6 +2884,7 @@ class E2ELightRagTest {
             );
             var neo4j = new Neo4jContainer<>("neo4j:5-community").withAdminPassword("password")
         ) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             postgres.start();
             neo4j.start();
 

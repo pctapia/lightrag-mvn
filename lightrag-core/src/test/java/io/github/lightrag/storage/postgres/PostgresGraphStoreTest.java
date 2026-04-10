@@ -3,7 +3,9 @@ package io.github.lightrag.storage.postgres;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.github.lightrag.storage.GraphStore;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -156,6 +158,7 @@ class PostgresGraphStoreTest {
     }
 
     private static StoreResources newStoreResources(PostgreSQLContainer<?> container) {
+        Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
         container.start();
         var config = new PostgresStorageConfig(
             container.getJdbcUrl(),

@@ -11,7 +11,9 @@ import io.github.lightrag.storage.postgres.PostgresStorageConfig;
 import io.github.lightrag.storage.postgres.PostgresStorageProvider;
 import io.github.lightrag.types.Chunk;
 import io.github.lightrag.types.Document;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -323,6 +325,7 @@ class DocumentIngestorTest {
     void ingestsDocumentsIntoPostgresStorageProvider() {
         var image = DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres");
         try (var container = new PostgreSQLContainer<>(image)) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             container.start();
 
             var storage = new PostgresStorageProvider(new PostgresStorageConfig(
@@ -358,6 +361,7 @@ class DocumentIngestorTest {
     void rollsBackPostgresDocumentWriteWhenChunkPersistenceFails() throws Exception {
         var image = DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres");
         try (var container = new PostgreSQLContainer<>(image)) {
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
             container.start();
 
             var storage = new PostgresStorageProvider(new PostgresStorageConfig(

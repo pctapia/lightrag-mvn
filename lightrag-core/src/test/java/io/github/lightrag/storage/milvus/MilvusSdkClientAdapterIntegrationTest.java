@@ -31,7 +31,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 class MilvusSdkClientAdapterIntegrationTest {
     private static final String ID_FIELD = "id";
     private static final String DENSE_VECTOR_FIELD = "dense_vector";

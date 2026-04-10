@@ -5,8 +5,10 @@ import io.github.lightrag.api.QueryRequest;
 import io.github.lightrag.indexing.KnowledgeExtractor;
 import io.github.lightrag.model.ChatModel;
 import io.github.lightrag.model.EmbeddingModel;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.testcontainers.DockerClientFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -65,6 +67,7 @@ class RagasBatchEvaluationServiceTest {
 
     @Test
     void evaluatesDatasetUsingPostgresNeo4jTestcontainersProfile() throws Exception {
+        Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
         Files.writeString(tempDir.resolve("01_notes.md"), """
             # Notes
 

@@ -10,8 +10,10 @@ import io.github.lightrag.storage.DocumentStore;
 import io.github.lightrag.storage.GraphStore;
 import io.github.lightrag.storage.SnapshotStore;
 import io.github.lightrag.storage.VectorStore;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -1186,6 +1188,7 @@ class PostgresStorageProviderTest {
     }
 
     private static PostgreSQLContainer<?> newPostgresContainer() {
+        Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
         return new PostgreSQLContainer<>(
             DockerImageName.parse("pgvector/pgvector:pg16").asCompatibleSubstituteFor("postgres")
         );

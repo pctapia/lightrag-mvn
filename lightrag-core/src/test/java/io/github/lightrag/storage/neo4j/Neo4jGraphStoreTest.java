@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 class Neo4jGraphStoreTest {
     @Container
     private static final Neo4jContainer<?> NEO4J = new Neo4jContainer<>("neo4j:5-community")

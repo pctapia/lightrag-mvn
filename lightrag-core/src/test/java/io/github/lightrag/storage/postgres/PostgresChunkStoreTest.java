@@ -3,7 +3,9 @@ package io.github.lightrag.storage.postgres;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.github.lightrag.storage.ChunkStore;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -74,7 +76,8 @@ class PostgresChunkStoreTest {
     @Test
     void bootstrapRejectsLegacyChunkForeignKeyConstraintSchema() throws Exception {
         try (var container = newPostgresContainer()) {
-            container.start();
+            Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
+        container.start();
             var config = new PostgresStorageConfig(
                 container.getJdbcUrl(),
                 container.getUsername(),
@@ -133,6 +136,7 @@ class PostgresChunkStoreTest {
     }
 
     private static StoreResources newStoreResources(PostgreSQLContainer<?> container) {
+        Assumptions.assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Docker not available");
         container.start();
         var config = new PostgresStorageConfig(
             container.getJdbcUrl(),
