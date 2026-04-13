@@ -296,12 +296,15 @@ public final class IndexingPipeline {
 
     private ComputedIngest computeDocument(Document document) {
         var source = Objects.requireNonNull(document, "document");
+        log.debug("Processing document: id={}", source.id());
         var prepared = documentIngestor.prepare(List.of(source));
         var chunks = prepared.chunks();
+        log.debug("Chunked document: id={}, chunks={}", source.id(), chunks.size());
         var chunkVectors = chunkVectors(chunks);
         var graph = graphAssembler.assemble(chunks.stream()
             .map(chunk -> new GraphAssembler.ChunkExtraction(chunk.id(), knowledgeExtractor.extract(chunk)))
             .toList());
+        log.debug("Knowledge extracted: id={}, entities={}, relations={}", source.id(), graph.entities().size(), graph.relations().size());
         var entityVectors = entityVectors(graph.entities());
         var relationVectors = relationVectors(graph.relations());
         return new ComputedIngest(source, prepared, chunkVectors, graph, entityVectors, relationVectors);
@@ -312,12 +315,15 @@ public final class IndexingPipeline {
         io.github.lightrag.api.DocumentIngestOptions options
     ) {
         var source = Objects.requireNonNull(parsedDocument, "parsedDocument");
+        log.debug("Processing document: id={}", source.documentId());
         var prepared = documentIngestor.prepareParsed(source, Objects.requireNonNull(options, "options"));
         var chunks = prepared.chunks();
+        log.debug("Chunked document: id={}, chunks={}", source.documentId(), chunks.size());
         var chunkVectors = chunkVectors(chunks);
         var graph = graphAssembler.assemble(chunks.stream()
             .map(chunk -> new GraphAssembler.ChunkExtraction(chunk.id(), knowledgeExtractor.extract(chunk)))
             .toList());
+        log.debug("Knowledge extracted: id={}, entities={}, relations={}", source.documentId(), graph.entities().size(), graph.relations().size());
         var entityVectors = entityVectors(graph.entities());
         var relationVectors = relationVectors(graph.relations());
         return new ComputedIngest(toDocument(source), prepared, chunkVectors, graph, entityVectors, relationVectors);
@@ -363,6 +369,11 @@ public final class IndexingPipeline {
                         "processed %d chunks".formatted(computed.prepared().chunks().size()),
                         null
                     ));
+                    log.debug("Document indexed: id={}, chunks={}, entities={}, relations={}",
+                        computed.source().id(),
+                        computed.prepared().chunks().size(),
+                        computed.graph().entities().size(),
+                        computed.graph().relations().size());
                     return null;
                 });
             }

@@ -6,6 +6,8 @@ import io.github.lightrag.api.LightRag;
 import io.github.lightrag.types.Document;
 import io.github.lightrag.types.RawDocumentSource;
 import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -24,6 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 class IngestJobService {
+    private static final Logger log = LoggerFactory.getLogger(IngestJobService.class);
     private static final String JOB_CANCELLED_MESSAGE = "job cancelled";
 
     private final LightRag lightRag;
@@ -221,6 +224,8 @@ class IngestJobService {
         if (!jobState.markStarted()) {
             return;
         }
+        log.debug("Ingest job started: jobId={}, workspace={}, documents={}",
+                jobState.jobId(), jobState.workspaceId(), jobState.documentCount());
         try {
             if (jobState.hasRawSources()) {
                 lightRag.ingestSources(jobState.workspaceId(), jobState.rawSources(), jobState.ingestOptions());
@@ -228,12 +233,14 @@ class IngestJobService {
                 lightRag.ingest(jobState.workspaceId(), jobState.documents());
             }
             jobState.markSucceeded();
+            log.debug("Ingest job succeeded: jobId={}", jobState.jobId());
         } catch (Throwable throwable) {
             if (jobState.isCancelling()) {
                 jobState.markCancelled(JOB_CANCELLED_MESSAGE);
                 Thread.currentThread().interrupt();
                 return;
             }
+            log.error("Ingest job failed: jobId={}", jobState.jobId(), throwable);
             jobState.markFailed(throwable);
         }
     }
@@ -356,6 +363,10 @@ class IngestJobService {
 
         int attempt() {
             return attempt;
+        }
+
+        int documentCount() {
+            return documentCount;
         }
 
         synchronized void attachFuture(FutureTask<Void> futureTask) {

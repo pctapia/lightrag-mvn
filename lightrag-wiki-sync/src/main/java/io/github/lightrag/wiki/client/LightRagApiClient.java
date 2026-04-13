@@ -70,7 +70,7 @@ public class LightRagApiClient {
                 throw new IOException(
                         "Upload failed — HTTP " + response.code() + " for [" + fileName + "]: " + responseBody);
             }
-            log.info("Uploaded {} to LightRAG (HTTP {})", fileName, response.code());
+            log.debug("Uploaded {} to LightRAG (HTTP {})", fileName, response.code());
             return responseBody;
         }
     }
