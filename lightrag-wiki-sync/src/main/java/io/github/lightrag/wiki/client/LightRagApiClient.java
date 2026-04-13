@@ -34,6 +34,8 @@ public class LightRagApiClient {
                 .readTimeout(120, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .build();
+        log.info("LightRagApiClient initialized: apiUrl={}, workspaceId={}",
+                properties.getLightragApiUrl(), properties.getWorkspaceId());
     }
 
     /**
@@ -68,7 +70,7 @@ public class LightRagApiClient {
                 throw new IOException(
                         "Upload failed — HTTP " + response.code() + " for [" + fileName + "]: " + responseBody);
             }
-            log.debug("Upload response for {}: {}", fileName, responseBody);
+            log.info("Uploaded {} to LightRAG (HTTP {})", fileName, response.code());
             return responseBody;
         }
     }

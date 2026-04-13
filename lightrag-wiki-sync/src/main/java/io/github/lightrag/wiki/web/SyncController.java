@@ -2,6 +2,8 @@ package io.github.lightrag.wiki.web;
 
 import io.github.lightrag.wiki.scheduler.WikiSyncScheduler;
 import io.github.lightrag.wiki.sync.SyncResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sync")
 public class SyncController {
 
+    private static final Logger log = LoggerFactory.getLogger(SyncController.class);
+
     private final WikiSyncScheduler scheduler;
 
     public SyncController(WikiSyncScheduler scheduler) {
@@ -38,7 +42,11 @@ public class SyncController {
      */
     @PostMapping("/trigger")
     public ResponseEntity<SyncResult> trigger() {
+        log.info("Manual sync triggered via POST /sync/trigger");
         SyncResult result = scheduler.runSync();
+        log.info("Manual sync finished — uploaded={}, deleted={}, failed={}, skipped={}, duration={}ms",
+                result.filesUploaded(), result.filesDeleted(), result.filesFailed(),
+                result.filesSkipped(), result.duration().toMillis());
         return ResponseEntity.ok(result);
     }
 }
